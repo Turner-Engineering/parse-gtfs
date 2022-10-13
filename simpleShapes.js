@@ -13,19 +13,22 @@ function sortShapesCollection(shapesCollection) {
   ]);
 }
 
-function sort(path) {
-  console.log(`Sorting ${path}`);
+function simplify(path) {
+  console.log(`Simplifying Shapes: ${path}`);
   const shapesCollection = readJson(path);
   writeJson(
-    path.replace("shapes.json", "UNSORTED_shapes.json"),
+    path.replace("shapesLite.json", "RAW_shapes.json"),
     shapesCollection
   );
   const sortedShapes = sortShapesCollection(shapesCollection);
-  writeJson(path, sortedShapes);
+  const liteShapes = sortedShapes.map((shape) =>
+    _.pick(shape, ["shape_id", "shape_pt_lat", "shape_pt_lon"])
+  );
+  writeJson(path, liteShapes);
 }
 
 // sort("shapes.json");
 
 module.exports = {
-  sort,
+  simplify,
 };

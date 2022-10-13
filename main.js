@@ -1,12 +1,12 @@
-// 1. Extract from zip
-// 2. Convert to JSON
-// 3. Process any files that need to be processed
-// 4. save the result in data/parsed
+// 1. Extract from zip => Raw
+// 2. Convert to JSON => Extracted
+// 3. Process any files that need to be processed => Parsed
+// 4. save the result in data/dist => Dist
 
 const extract = require("extract-zip");
 const fs = require("fs");
 const gtfsToJson = require("./gtfsToJson");
-const sortShapes = require("./sortShapes");
+const simpleShapes = require("./simpleShapes");
 const routesWithStops = require("./routesWithStops");
 const routesWithShapeIds = require("./routesWithShapeIds");
 
@@ -24,9 +24,24 @@ async function unzipAll(rawPath, extractedPath) {
   }
 }
 
-const RAW_PATH = "data/raw";
-const EXTRACTED_PATH = "data/extracted";
-const PARSED_PATH = "data/parsed";
+function copyToDist(parsedDir, distDir) {
+  console.log(`Copying files to  ${distDir}`);
+  assureDir(distDir);
+  for (const file of distFiles) {
+    fs.copyFileSync(`${parsedDir}/${file}`, `${distDir}/${file}`);
+  }
+}
+
+function assureDir(dir) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+}
+
+const RAW_BASE_PATH = "data/raw";
+const EXTRACTED_BASE_PATH = "data/extracted";
+const PARSED_BASE_PATH = "data/parsed";
+const DIST_BASE_PATH = "data/dist";
 
 const distFiles = [
   "routes.json",
@@ -37,17 +52,26 @@ const distFiles = [
 ];
 
 async function main() {
-  await unzipAll(RAW_PATH, EXTRACTED_PATH);
-  const agencies = fs.readdirSync(EXTRACTED_PATH);
+  assureDir(EXTRACTED_BASE_PATH);
+  assureDir(PARSED_BASE_PATH);
+  assureDir(DIST_BASE_PATH);
+
+  await unzipAll(RAW_BASE_PATH, EXTRACTED_BASE_PATH);
+  const agencies = fs.readdirSync(EXTRACTED_BASE_PATH);
   for (const agency of agencies) {
-    const sourceDir = `${EXTRACTED_PATH}/${agency}`;
-    const targetDir = `${PARSED_PATH}/${agency}`;
-    // await gtfsToJson.convert(sourceDir, targetDir);
-    sortShapes.sort(`${targetDir}/shapes.json`); // sort the shapes.json file by shape_id and shape_pt_sequence
-    routesWithStops.addRoutesWithStops(targetDir); // create new file that is easy to get route stops out of
-    routesWithShapeIds.addRoutesWithShapeIds(targetDir); // create new file that is easy to get route shape ids out of
+    const extractedDir = `${EXTRACTED_BASE_PATH}/${agency}`;
+    const parsedDir = `${PARSED_BASE_PATH}/${agency}`;
+    const distDir = `${DIST_BASE_PATH}/${agency}`;
+    assureDir(extractedDir);
+    assureDir(parsedDir);
+    assureDir(distDir);
+
+    await gtfsToJson.convert(extractedDir, parsedDir);
+    simpleShapes.simplify(`${parsedDir}/shapes.json`); // sort the shapes.json file by shape_id and shape_pt_sequence
+    routesWithStops.addRoutesWithStops(parsedDir); // create new file that is easy to get route stops out of
+    routesWithShapeIds.addRoutesWithShapeIds(parsedDir); // create new file that is easy to get route shape ids out of
+    copyToDist(parsedDir, distDir); // copy dist files to dist folder
   }
-  // rename all folders in extracted
 }
 
 main();

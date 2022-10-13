@@ -13,7 +13,7 @@ function readJson(path) {
 
 function writeJson(path, data) {
   try {
-    const dataString = JSON.stringify(data, null, 2);
+    const dataString = JSON.stringify(data);
     fs.writeFileSync(path, dataString);
   } catch (err) {
     const writeStream = fs.createWriteStream(path);

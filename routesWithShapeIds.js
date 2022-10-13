@@ -32,8 +32,8 @@ function addRoutesWithShapeIds(dir) {
   writeJson(`${dir}/routesWithShapeIds.json`, routesWithShapeIds);
 }
 
-const DIR = "data/parsed/septaGtfs";
-addRoutesWithShapeIds(DIR);
+// const DIR = "data/parsed/septaGtfs";
+// addRoutesWithShapeIds(DIR);
 
 module.exports = {
   addRoutesWithShapeIds,
