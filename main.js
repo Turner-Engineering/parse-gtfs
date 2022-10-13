@@ -67,9 +67,9 @@ async function main() {
     assureDir(distDir);
 
     await gtfsToJson.convert(extractedDir, parsedDir);
-    simpleShapes.simplify(`${parsedDir}/shapes.json`); // sort the shapes.json file by shape_id and shape_pt_sequence
-    routesWithStops.addRoutesWithStops(parsedDir); // create new file that is easy to get route stops out of
-    routesWithShapeIds.addRoutesWithShapeIds(parsedDir); // create new file that is easy to get route shape ids out of
+    await simpleShapes.simplify(`${parsedDir}/shapes.json`); // sort the shapes.json file by shape_id and shape_pt_sequence
+    await routesWithStops.addRoutesWithStops(parsedDir); // create new file that is easy to get route stops out of
+    await routesWithShapeIds.addRoutesWithShapeIds(parsedDir); // create new file that is easy to get route shape ids out of
     copyToDist(parsedDir, distDir); // copy dist files to dist folder
   }
 }

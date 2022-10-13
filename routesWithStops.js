@@ -10,9 +10,9 @@ const { readJson, writeJson } = require("./readWrite");
 
 // Data is then read from the routeStops.json file.
 
-function getRoutesWithTripIds(dir) {
-  const routes = readJson(`${dir}/routes.json`);
-  const trips = readJson(`${dir}/trips.json`);
+async function getRoutesWithTripIds(dir) {
+  const routes = await readJson(`${dir}/routes.json`);
+  const trips = await readJson(`${dir}/trips.json`);
   const routesWithTripIds = routes.map((route) => {
     const routeTripIds = trips
       .filter((trip) => trip.route_id === route.route_id)
@@ -25,8 +25,8 @@ function getRoutesWithTripIds(dir) {
   return routesWithTripIds;
 }
 
-function getTripsWithStopIds(dir) {
-  const stopTimes = readJson(`${dir}/stop_times.json`);
+async function getTripsWithStopIds(dir) {
+  const stopTimes = await readJson(`${dir}/stop_times.json`);
   const groupedStopTimes = _.groupBy(stopTimes, "trip_id");
   const tripsWithStopIds = Object.keys(groupedStopTimes).map((trip_id) => {
     const stopTimes = groupedStopTimes[trip_id];
@@ -50,11 +50,11 @@ function getStopIds(routes, trips) {
   return stop_ids;
 }
 
-function getRoutesWithStops(dir) {
+async function getRoutesWithStops(dir) {
   const stopPropsToPick = ["stop_id", "stop_name", "stop_lat", "stop_lon"];
-  const stops = readJson(`${dir}/stops.json`);
-  const routesWithTripIds = getRoutesWithTripIds(dir);
-  const tripsWithStopIds = getTripsWithStopIds(dir);
+  const stops = await readJson(`${dir}/stops.json`);
+  const routesWithTripIds = await getRoutesWithTripIds(dir);
+  const tripsWithStopIds = await getTripsWithStopIds(dir);
   const routesWithStops = routesWithTripIds.map((route) => {
     const stop_ids = getStopIds(route, tripsWithStopIds);
     const routeStops = stops
@@ -68,10 +68,10 @@ function getRoutesWithStops(dir) {
   return routesWithStops;
 }
 
-function addRoutesWithStops(dir) {
+async function addRoutesWithStops(dir) {
   console.log(`Adding routesWithStops to ${dir}`);
   const routesWithStops = getRoutesWithStops(dir);
-  writeJson(`${dir}/routesWithStops.json`, routesWithStops);
+  await writeJson(`${dir}/routesWithStops.json`, routesWithStops);
 }
 
 // const DIR = "data/parsed/septaGtfs";

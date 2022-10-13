@@ -10,9 +10,9 @@ const { readJson, writeJson } = require("./readWrite");
 
 // Data is then read from the routeStops.json file.
 
-function getRoutesWithShapeIds(dir) {
-  const routes = readJson(`${dir}/routes.json`);
-  const trips = readJson(`${dir}/trips.json`);
+async function getRoutesWithShapeIds(dir) {
+  const routes = await readJson(`${dir}/routes.json`);
+  const trips = await readJson(`${dir}/trips.json`);
   const routesWithShapeIds = routes.map((route) => {
     const routeShapeIds = trips
       .filter((trip) => trip.route_id === route.route_id)
@@ -26,10 +26,10 @@ function getRoutesWithShapeIds(dir) {
   return routesWithShapeIds;
 }
 
-function addRoutesWithShapeIds(dir) {
+async function addRoutesWithShapeIds(dir) {
   console.log(`Adding routesWithShapeIds to ${dir}`);
-  const routesWithShapeIds = getRoutesWithShapeIds(dir);
-  writeJson(`${dir}/routesWithShapeIds.json`, routesWithShapeIds);
+  const routesWithShapeIds = await getRoutesWithShapeIds(dir);
+  await writeJson(`${dir}/routesWithShapeIds.json`, routesWithShapeIds);
 }
 
 // const DIR = "data/parsed/septaGtfs";
@@ -39,6 +39,6 @@ module.exports = {
   addRoutesWithShapeIds,
 };
 
-// const trips = readJson("data/parsed/septaGtfs/trips.json");
+// const trips = await readJson("data/parsed/septaGtfs/trips.json");
 // console.log(trips.length);
 // console.log(_.uniqBy(trips, "shape_id").length);
