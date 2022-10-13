@@ -42,7 +42,7 @@ function writeJSON(path, data) {
 function removeCharsFromString(string, chars) {
   if (!string) return "";
   for (const char of chars) {
-    string = string.replace(char, "");
+    string = string.replaceAll(char, "");
   }
   return string;
 }
