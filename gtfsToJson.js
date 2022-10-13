@@ -31,7 +31,7 @@ function removeCharsFromString(string, chars) {
 }
 
 function getLines(filename) {
-  const charsToRemove = ["\r", '"'];
+  const charsToRemove = ["\r"];
   let dataString = readTxt(filename);
   dataString = removeCharsFromString(dataString, charsToRemove);
   const lines = dataString.split("\n");
@@ -45,10 +45,12 @@ async function getCollection(path) {
   const headers = firstLine.split(",");
   const collection = lines.map((line) => {
     const row = {};
-    const values = line.split(",");
+    // split values by commas, but ignore commas in quotes
+    const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+
     values.forEach((value, index) => {
       const key = headers[index];
-      row[key] = value;
+      row[key] = value.replaceAll('"', "");
     });
     return row;
   });

@@ -3,12 +3,16 @@
 // 3. Process any files that need to be processed => Parsed
 // 4. save the result in data/dist => Dist
 
+// decent source: https://transitfeeds.com/
+// just check the age
+
 const extract = require("extract-zip");
 const fs = require("fs");
 const gtfsToJson = require("./gtfsToJson");
 const simpleShapes = require("./simpleShapes");
 const routesWithStops = require("./routesWithStops");
 const routesWithShapeIds = require("./routesWithShapeIds");
+const addCentersToRoutes = require("./addCentersToRoutes");
 
 async function unzipAll(rawPath, extractedPath) {
   const filenames = fs.readdirSync(rawPath);
@@ -71,6 +75,7 @@ async function main() {
     await simpleShapes.simplify(`${parsedDir}/shapes.json`); // sort the shapes.json file by shape_id and shape_pt_sequence
     await routesWithStops.addRoutesWithStops(parsedDir); // create new file that is easy to get route stops out of
     await routesWithShapeIds.addRoutesWithShapeIds(parsedDir); // create new file that is easy to get route shape ids out of
+    await addCentersToRoutes.addCenters(parsedDir); // create new file that is easy to get route shape ids out of
     copyToDist(parsedDir, distDir); // copy dist files to dist folder
     console.log();
   }
