@@ -7,10 +7,7 @@ const extract = require("extract-zip");
 const fs = require("fs");
 const gtfsToJson = require("./gtfsToJson");
 const sortShapes = require("./sortShapes");
-
-const RAW_PATH = "data/raw";
-const EXTRACTED_PATH = "data/extracted";
-const PARSED_PATH = "data/parsed";
+const routesWithStops = require("./routesWithStops");
 
 async function unzipAll(rawPath, extractedPath) {
   const filenames = fs.readdirSync(rawPath);
@@ -26,6 +23,10 @@ async function unzipAll(rawPath, extractedPath) {
   }
 }
 
+const RAW_PATH = "data/raw";
+const EXTRACTED_PATH = "data/extracted";
+const PARSED_PATH = "data/parsed";
+
 async function main() {
   await unzipAll(RAW_PATH, EXTRACTED_PATH);
   const agencies = fs.readdirSync(EXTRACTED_PATH);
@@ -34,6 +35,7 @@ async function main() {
     const targetDir = `${PARSED_PATH}/${agency}`;
     await gtfsToJson.convert(sourceDir, targetDir);
     sortShapes.sort(`${targetDir}/shapes.json`);
+    routesWithStops.addRoutesWithStops(targetDir);
   }
   // rename all folders in extracted
 }
