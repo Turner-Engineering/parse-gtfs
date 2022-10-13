@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { mainModule } = require("process");
+const { readTxt, writeJson } = require("./readWrite.js");
 
 const GTFS_SPEC_FILENAMES = [
   // fetched on 2022-10-13 from https://developers.google.com/transit/gtfs/reference#table_of_contents
@@ -21,23 +21,6 @@ const GTFS_SPEC_FILENAMES = [
   "translations.txt",
   "attributions.txt",
 ];
-
-function readTxt(path) {
-  return fs.readFileSync(path, "utf8");
-}
-
-function stringify(value) {
-  try {
-    return JSON.stringify(value, null, 2); // this is nicely formatted with line breaks
-  } catch (err) {
-    return JSON.stringify(value); // this is a single line
-  }
-}
-
-function writeJSON(path, data) {
-  const dataString = stringify(data);
-  fs.writeFileSync(path, dataString);
-}
 
 function removeCharsFromString(string, chars) {
   if (!string) return "";
@@ -94,7 +77,7 @@ async function convertFile(path, sourceDir, targetDir) {
   try {
     const collection = await getCollection(path);
     if (collection.length > 0) {
-      writeJSON(
+      writeJson(
         path.replace(".txt", ".json").replace(sourceDir, targetDir),
         collection
       );

@@ -1,13 +1,5 @@
-const fs = require("fs");
 const _ = require("lodash");
-
-function readJson(path) {
-  return JSON.parse(fs.readFileSync(path, "utf8"));
-}
-
-function writeJson(path, data) {
-  fs.writeFileSync(path, JSON.stringify(data, null, 2));
-}
+const { readJson, writeJson } = require("./readWrite");
 
 function tryInt(str) {
   const int = parseInt(str);

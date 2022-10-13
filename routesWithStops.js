@@ -1,5 +1,5 @@
-const fs = require("fs");
 const _ = require("lodash");
+const { readJson, writeJson } = require("./readWrite");
 
 // The stop_times.txt file contains the relationship between trips and stops.
 // Without this, stops that belong to a certain route cannot be determined.
@@ -10,21 +10,9 @@ const _ = require("lodash");
 
 // Data is then read from the routeStops.json file.
 
-function readJson(path) {
-  return JSON.parse(fs.readFileSync(path, "utf8"));
-}
-
-function writeJson(path, data) {
-  fs.writeFileSync(path, JSON.stringify(data, null, 2));
-}
-
-function getCollection(filename) {
-  return readJson(filename);
-}
-
 function getRoutesWithTripIds(dir) {
-  const routes = getCollection(`${dir}/routes.json`);
-  const trips = getCollection(`${dir}/trips.json`);
+  const routes = readJson(`${dir}/routes.json`);
+  const trips = readJson(`${dir}/trips.json`);
   const routesWithTripIds = routes.map((route) => {
     const routeTripIds = trips
       .filter((trip) => trip.route_id === route.route_id)
@@ -38,7 +26,7 @@ function getRoutesWithTripIds(dir) {
 }
 
 function getTripsWithStopIds(dir) {
-  const stopTimes = getCollection(`${dir}/stop_times.json`);
+  const stopTimes = readJson(`${dir}/stop_times.json`);
   const groupedStopTimes = _.groupBy(stopTimes, "trip_id");
   const tripsWithStopIds = Object.keys(groupedStopTimes).map((trip_id) => {
     const stopTimes = groupedStopTimes[trip_id];
@@ -64,7 +52,7 @@ function getStopIds(routes, trips) {
 
 function getRoutesWithStops(dir) {
   const stopPropsToPick = ["stop_id", "stop_name", "stop_lat", "stop_lon"];
-  const stops = getCollection(`${dir}/stops.json`);
+  const stops = readJson(`${dir}/stops.json`);
   const routesWithTripIds = getRoutesWithTripIds(dir);
   const tripsWithStopIds = getTripsWithStopIds(dir);
   const routesWithStops = routesWithTripIds.map((route) => {

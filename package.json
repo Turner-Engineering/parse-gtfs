@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@discoveryjs/json-ext": "^0.5.7",
     "extract-zip": "^2.0.1",
     "lodash": "^4.17.21"
   }
