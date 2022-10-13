@@ -59,6 +59,7 @@ async function main() {
   await unzipAll(RAW_BASE_PATH, EXTRACTED_BASE_PATH);
   const agencies = fs.readdirSync(EXTRACTED_BASE_PATH);
   for (const agency of agencies) {
+    console.log(`Converting files for ${agency}`);
     const extractedDir = `${EXTRACTED_BASE_PATH}/${agency}`;
     const parsedDir = `${PARSED_BASE_PATH}/${agency}`;
     const distDir = `${DIST_BASE_PATH}/${agency}`;
@@ -71,6 +72,7 @@ async function main() {
     await routesWithStops.addRoutesWithStops(parsedDir); // create new file that is easy to get route stops out of
     await routesWithShapeIds.addRoutesWithShapeIds(parsedDir); // create new file that is easy to get route shape ids out of
     copyToDist(parsedDir, distDir); // copy dist files to dist folder
+    console.log();
   }
 }
 

@@ -77,7 +77,7 @@ async function convertFile(path, sourceDir, targetDir) {
   try {
     const collection = await getCollection(path);
     if (collection.length > 0) {
-      writeJson(
+      await writeJson(
         path.replace(".txt", ".json").replace(sourceDir, targetDir),
         collection
       );

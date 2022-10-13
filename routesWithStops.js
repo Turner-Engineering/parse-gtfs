@@ -70,7 +70,7 @@ async function getRoutesWithStops(dir) {
 
 async function addRoutesWithStops(dir) {
   console.log(`Adding routesWithStops to ${dir}`);
-  const routesWithStops = getRoutesWithStops(dir);
+  const routesWithStops = await getRoutesWithStops(dir);
   await writeJson(`${dir}/routesWithStops.json`, routesWithStops);
 }
 

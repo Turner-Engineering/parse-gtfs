@@ -16,7 +16,10 @@ function sortShapesCollection(shapesCollection) {
 async function simplify(path) {
   console.log(`Simplifying Shapes: ${path}`);
   const shapesCollection = await readJson(path);
-  writeJson(path.replace("shapes.json", "RAW_shapes.json"), shapesCollection);
+  await writeJson(
+    path.replace("shapes.json", "RAW_shapes.json"),
+    shapesCollection
+  );
   const sortedShapes = sortShapesCollection(shapesCollection);
   const liteShapes = sortedShapes.map((shape) =>
     _.pick(shape, ["shape_id", "shape_pt_lat", "shape_pt_lon"])
