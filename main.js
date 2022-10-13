@@ -6,6 +6,7 @@
 const extract = require("extract-zip");
 const fs = require("fs");
 const gtfsToJson = require("./gtfsToJson");
+const sortShapes = require("./sortShapes");
 
 const RAW_PATH = "data/raw";
 const EXTRACTED_PATH = "data/extracted";
@@ -32,6 +33,7 @@ async function main() {
     const sourceDir = `${EXTRACTED_PATH}/${agency}`;
     const targetDir = `${PARSED_PATH}/${agency}`;
     await gtfsToJson.convert(sourceDir, targetDir);
+    sortShapes.sort(`${targetDir}/shapes.json`);
   }
   // rename all folders in extracted
 }
