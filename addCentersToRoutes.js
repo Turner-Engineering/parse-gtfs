@@ -81,7 +81,6 @@ async function addCenters(dir) {
     return { ...route, ...routeCenter };
   });
   await writeJson(`${dir}/routes.json`, newRoutes);
-  console.log("asdf");
 }
 
 module.exports = {
