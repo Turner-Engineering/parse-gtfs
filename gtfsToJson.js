@@ -43,6 +43,10 @@ async function getCollection(path) {
   const lines = getLines(path);
   const firstLine = lines.shift();
   const headers = firstLine.split(",");
+  // remove all whitespace from before and after headers
+  // not having this caused a bug once
+  headers.forEach((header, index) => (headers[index] = header.trim()));
+
   const collection = lines.map((line) => {
     const row = {};
     // split values by commas, but ignore commas in quotes
