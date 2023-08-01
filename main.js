@@ -69,7 +69,7 @@ async function main() {
   assureDir(DIST_BASE_PATH);
 
   // const agencies = fs.readdirSync(EXTRACTED_BASE_PATH);
-  const agencies = ["mtm"]; // can specify agencies here
+  const agencies = ["lacmta"]; // can specify agencies here
   await unzipAll(RAW_BASE_PATH, EXTRACTED_BASE_PATH, agencies);
   for (const agency of agencies) {
     console.log(`Converting files for ${agency}`);
