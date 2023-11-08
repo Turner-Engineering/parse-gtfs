@@ -53,7 +53,7 @@ async function getCollection(path) {
     const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
 
     values.forEach((value, index) => {
-      const key = headers[index];
+      const key = headers[index].replaceAll('"',"");
       row[key] = value.replaceAll('"', "");
     });
     return row;
