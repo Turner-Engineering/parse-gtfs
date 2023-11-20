@@ -43,6 +43,10 @@ function copyToDist(parsedDir, distDir) {
   }
 }
 
+async function deleteFolder(path) {
+  fs.rmSync(path, { recursive: true });
+}
+
 function assureDir(dir) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
@@ -69,7 +73,7 @@ async function main() {
   assureDir(DIST_BASE_PATH);
 
   // const agencies = fs.readdirSync(EXTRACTED_BASE_PATH);
-  const agencies = ["lacmta"]; // can specify agencies here
+  const agencies = ["larail"]; // can specify agencies here
   await unzipAll(RAW_BASE_PATH, EXTRACTED_BASE_PATH, agencies);
   for (const agency of agencies) {
     console.log(`Converting files for ${agency}`);
@@ -87,6 +91,8 @@ async function main() {
     await tripIdsToRouteIds.addTripIdsToRouteIds(parsedDir); // create new file that maps trips to routes
     await addCentersToRoutes.addCenters(parsedDir); // create new file that is easy to get route shape ids out of
     copyToDist(parsedDir, distDir); // copy dist files to dist folder
+    deleteFolder(parsedDir); // cleanup extracted files
+
     console.log();
   }
 }
